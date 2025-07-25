@@ -1,6 +1,5 @@
 package com.core;
 
-import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -23,9 +22,7 @@ public class BookModelTest {
         when(repository.getBooks()).thenReturn(
                 new java.util.ArrayList<>(Arrays.asList(
                         new Book("Cien años de soledad", "Gabriel García Márquez", 12000),
-                        new Book("El túnel", "Ernesto Sabato", 8000)
-                ))
-        );
+                        new Book("El túnel", "Ernesto Sabato", 8000))));
 
         model = new BookModel(repository);
     }
