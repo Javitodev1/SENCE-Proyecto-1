@@ -46,7 +46,11 @@ public class BookModel {
         }
 
         targetBook.setDiscount(discount);
-        repository.updateBook(targetBook);
+        boolean success = repository.updateBook(targetBook);
+
+        if (!success) {
+            LoggingService.log("Book with id: " + id + " could not be updated into database.");
+        }
 
         return targetBook;
     }
