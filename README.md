@@ -114,6 +114,7 @@ Una de las principales dificultades fue configurar correctamente el entorno de p
 
 Trabajar con ciclos TDD fue desafiante al principio, pero con el tiempo resultó motivador y satisfactorio ver cómo las pruebas guiaban el diseño del código. Si repitiéramos el proyecto, organizaríamos mejor los paquetes desde el inicio y automatizaríamos aún más la cobertura de pruebas para mantener la calidad del software.
 
+---
 
 ## Refactorizacion del código
 
