@@ -12,7 +12,7 @@ public class BookDAO {
     }
 
     public boolean store(Book book) throws SQLException {
-        String sql = "INSERT INTO books (id, title, author, price, discount) VALUES (?, ?, ?, ?, ?)";
+        String sql = SqlStatementBuilder.insertBook();
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, book.getId());
             pstmt.setString(2, book.getTitle());
@@ -24,7 +24,7 @@ public class BookDAO {
     }
 
     public boolean update(Book book) throws SQLException {
-        String sql = "UPDATE books SET title = ?, author = ?, price = ?, discount = ? WHERE id = ?";
+        String sql = SqlStatementBuilder.updateBook();
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, book.getTitle());
             pstmt.setString(2, book.getAuthor());
@@ -36,7 +36,7 @@ public class BookDAO {
     }
 
     public boolean remove(int id) throws SQLException {
-        String sql = "DELETE FROM books WHERE id = ?";
+        String sql = SqlStatementBuilder.deleteBook();
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             return pstmt.executeUpdate() > 0;
@@ -45,7 +45,7 @@ public class BookDAO {
 
     public List<Book> getAll() throws SQLException {
         List<Book> books = new ArrayList<>();
-        String sql = "SELECT * FROM books";
+        String sql = SqlStatementBuilder.selectAllBooks();
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Book book = new Book(
