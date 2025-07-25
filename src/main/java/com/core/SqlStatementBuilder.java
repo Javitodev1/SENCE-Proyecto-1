@@ -7,7 +7,7 @@ public class SqlStatementBuilder {
     }
 
     public static String insertBook() {
-        return "INSERT INTO books (id, title, author, price, discount) VALUES (?, ?, ?, ?, ?)";
+        return "INSERT INTO books (title, author, price, discount) VALUES (?, ?, ?, ?)";
     }
 
     public static String updateBook() {

@@ -31,6 +31,20 @@ public class SqliteBookRepository implements BookRepository {
         }
     }
 
+    public void closeConnection() {
+        if (conn != null) {
+            try {
+                if (!conn.isClosed()) {
+                    conn.close();
+                    LoggingService.log("Connection closed successfully.");
+                }
+            } catch (SQLException e) {
+                LoggingService.log("Failed to close database connection.");
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     private void initTable() {
         try {
             commandDAO.createTable();

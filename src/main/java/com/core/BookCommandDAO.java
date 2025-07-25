@@ -20,14 +20,26 @@ public class BookCommandDAO {
 
     public boolean store(Book book) throws SQLException {
         String sql = SqlStatementBuilder.insertBook();
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, book.getId());
-            pstmt.setString(2, book.getTitle());
-            pstmt.setString(3, book.getAuthor());
-            pstmt.setFloat(4, book.getPrice() / book.getDiscount());
-            pstmt.setFloat(5, book.getDiscount());
-            return pstmt.executeUpdate() > 0;
+        try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            pstmt.setString(1, book.getTitle());
+            pstmt.setString(2, book.getAuthor());
+            pstmt.setFloat(3, book.getPrice() / book.getDiscount());
+            pstmt.setFloat(4, book.getDiscount());
+
+            int affected = pstmt.executeUpdate();
+
+            if (affected == 0) {
+                return false;
+            }
+            
+            ResultSet keys = pstmt.getGeneratedKeys();
+            if (keys.next()) {
+                book.setId(keys.getInt(1));
+                return true;
+            }
         }
+
+        return false;
     }
 
     public boolean update(Book book) throws SQLException {

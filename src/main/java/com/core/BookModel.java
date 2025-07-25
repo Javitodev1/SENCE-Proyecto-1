@@ -9,11 +9,9 @@ public class BookModel {
     List<Book> books;
 
     public BookModel(BookRepository repository) {
-    this.repository = repository;
-    // SOLUCIÓN: hacer una copia mutable de la lista
-    this.books = new ArrayList<>(repository.getBooks());
-}
-
+        this.repository = repository;
+        this.books = new ArrayList<>(repository.getBooks());
+    }
 
     public Book createBook(String title, String autor, float price) {
         Book newBook = new Book(title, autor, price);
