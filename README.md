@@ -277,4 +277,4 @@ public class SqliteBookRepository implements BookRepository {
 }
 ```
 
-De esta forma separamos efectivamente las responsabilidades, mejorando la legibilidad del código y su facilitando su mantenimiento, el resto del codigo puede ser encontrado en el repositorio.
+De esta forma separamos efectivamente las responsabilidades, mejorando la legibilidad del código y facilitando su mantenimiento, el resto del codigo puede ser encontrado en el repositorio.
