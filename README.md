@@ -106,3 +106,10 @@ Este repositorio contiene el desarrollo de un proyecto de librería usando Java,
 | Revisor (par)  | Evalúa código y da feedback sobre buenas prácticas              |
 | Product owner  | Define historias de usuario, revisa cumplimiento de entregables y criterios |
 | Scrum master   | Facilitador para el equipo de desarrollo                         |
+
+🧠 Reflexión Final
+Durante el desarrollo del proyecto, aprendimos a aplicar los principios del Testing Ágil y a integrar el enfoque TDD (Red-Green-Refactor) para construir funcionalidades desde los tests. Este enfoque nos ayudó a tener mayor claridad sobre los requisitos y a detectar errores desde etapas tempranas.
+
+Una de las principales dificultades fue configurar correctamente el entorno de pruebas con TestNG y simular interacciones con la base de datos sin romper la lógica de negocio. Para resolverlo, utilizamos mocks y mejoramos la estructura del código siguiendo buenas prácticas.
+
+Trabajar con ciclos TDD fue desafiante al principio, pero con el tiempo resultó motivador y satisfactorio ver cómo las pruebas guiaban el diseño del código. Si repitiéramos el proyecto, organizaríamos mejor los paquetes desde el inicio y automatizaríamos aún más la cobertura de pruebas para mantener la calidad del software.
