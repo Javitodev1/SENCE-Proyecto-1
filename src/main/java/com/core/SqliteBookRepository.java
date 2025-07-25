@@ -6,10 +6,13 @@ import java.util.*;
 public class SqliteBookRepository implements BookRepository {
     private final String dbPath;
     private final boolean inMemory;
+    private Connection conn;
+    private BookCommandDAO commandDAO;
 
     public SqliteBookRepository(String dbPath, boolean inMemory) {
         this.dbPath = dbPath;
         this.inMemory = inMemory;
+        initConnection();
         initTable();
     }
 
@@ -17,83 +20,63 @@ public class SqliteBookRepository implements BookRepository {
         this(dbPath, false); // default: persistent
     }
 
-    private Connection connect() throws SQLException {
-        String url = inMemory ? "jdbc:sqlite::memory:" : "jdbc:sqlite:" + dbPath;
-        return DriverManager.getConnection(url);
+    private void initConnection() {
+        try {
+            String url = inMemory ? "jdbc:sqlite::memory:" : "jdbc:sqlite:" + dbPath;
+            conn = DriverManager.getConnection(url);
+            commandDAO = new BookCommandDAO(conn);
+        } catch (SQLException e) {
+            LoggingService.log("Failed to connect to database");
+            throw new RuntimeException(e);
+        }
     }
 
     private void initTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS books ( id INTEGER PRIMARY KEY, title TEXT NOT NULL, author TEXT NOT NULL, price REAL NOT NULL, discount REAL NOT NULL );";
-        try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+        try {
+            commandDAO.createTable();
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to initialize database", e);
+            LoggingService.log("Failed to initialize database");
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public boolean storeBook(Book book) {
-        String sql = "INSERT INTO books (id, title, author, price, discount) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, book.getId());
-            pstmt.setString(2, book.getTitle());
-            pstmt.setString(3, book.getAuthor());
-            pstmt.setFloat(4, book.getPrice() / book.getDiscount()); // store original price
-            pstmt.setFloat(5, book.getDiscount());
-            return pstmt.executeUpdate() > 0;
+        try {
+            return commandDAO.store(book);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingService.log(e.getStackTrace().toString());
             return false;
         }
     }
 
     @Override
     public boolean updateBook(Book book) {
-        String sql = "UPDATE books SET title = ?, author = ?, price = ?, discount = ? WHERE id = ?";
-        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, book.getTitle());
-            pstmt.setString(2, book.getAuthor());
-            pstmt.setFloat(3, book.getPrice() / book.getDiscount());
-            pstmt.setFloat(4, book.getDiscount());
-            pstmt.setInt(5, book.getId());
-            return pstmt.executeUpdate() > 0;
+        try {
+            return commandDAO.update(book);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingService.log(e.getStackTrace().toString());
             return false;
         }
     }
 
     @Override
     public boolean removeById(int id) {
-        String sql = "DELETE FROM books WHERE id = ?";
-        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            return pstmt.executeUpdate() > 0;
+        try {
+            return commandDAO.remove(id);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingService.log(e.getStackTrace().toString());
             return false;
         }
     }
 
     @Override
     public List<Book> getBooks() {
-        List<Book> books = new ArrayList<>();
-        String sql = "SELECT * FROM books";
-        try (Connection conn = connect();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                Book book = new Book(
-                        rs.getInt("id"),
-                        rs.getString("title"),
-                        rs.getString("author"),
-                        rs.getFloat("price"),
-                        rs.getFloat("discount"));
-                books.add(book);
-            }
+        try {
+            return commandDAO.getAll();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggingService.log(e.getStackTrace().toString());
         }
-        return books;
+        return Collections.emptyList();
     }
 }

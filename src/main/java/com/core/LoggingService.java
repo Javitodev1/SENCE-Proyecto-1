@@ -1,9 +1,9 @@
 package com.core;
 
 public class LoggingService {
-    static String message;
+    public static String message;
 
-    static void log(String message) {
+    public static void log(String message) {
         LoggingService.message = message;
         System.err.println(message);
     }

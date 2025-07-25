@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BookModel {
-    BookRepository repository;
+    private final BookRepository repository;
     List<Book> books;
 
     public BookModel(BookRepository repository) {

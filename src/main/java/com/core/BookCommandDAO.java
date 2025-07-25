@@ -4,11 +4,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookDAO {
+public class BookCommandDAO {
     private final Connection conn;
 
-    public BookDAO(Connection conn) {
+    public BookCommandDAO(Connection conn) {
         this.conn = conn;
+    }
+
+    public void createTable() throws SQLException {
+        String sql = SqlStatementBuilder.createTable();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        }
     }
 
     public boolean store(Book book) throws SQLException {
