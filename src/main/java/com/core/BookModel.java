@@ -1,5 +1,6 @@
 package com.core;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,9 +9,11 @@ public class BookModel {
     List<Book> books;
 
     public BookModel(BookRepository repository) {
-        this.repository = repository;
-        this.books = repository.getBooks();
-    }
+    this.repository = repository;
+    // SOLUCIÓN: hacer una copia mutable de la lista
+    this.books = new ArrayList<>(repository.getBooks());
+}
+
 
     public Book createBook(String title, String autor, float price) {
         Book newBook = new Book(title, autor, price);
