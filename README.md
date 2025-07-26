@@ -2,6 +2,24 @@
 
 Este repositorio contiene el desarrollo de un proyecto de librería usando Java, SQLite y pruebas automatizadas con TDD (Test Driven Development) como parte del portafolio de los módulos 2 y 3.
 
+## Instrucciones de ejecución
+
+En el repositorio se encuentra dos archivos pom segun corresponda el OS.
+```bash
+.
+├── pom.xml.linux
+├── pom.xml.windows
+```
+
+Elegir el que corresponda y renombrar a pom.xml
+```bash
+mv pom.xml.linux pom.xml
+```
+
+Luego instalar dependencias y ejecutar pruebas
+```bash
+mvn clean install
+```
 ---
 
 
@@ -94,6 +112,19 @@ Este repositorio contiene el desarrollo de un proyecto de librería usando Java,
 - Se verificará la cobertura y se refactorizará tras cada prueba exitosa.
 - Se revisará funcionalidad contra los criterios de aceptación.
 - Se ejecutarán pruebas automáticas con `mvn test` y se documentarán los resultados.
+
+---
+
+
+## ✅ Roles Involucrados en el Sprint
+
+| Rol           | Responsabilidad                                                  |
+|----------------|------------------------------------------------------------------|
+| Developer      | Implementa lógica, pruebas unitarias y conexión BD              |
+| QA             | Revisa criterios, realiza plan de pruebas, ejecuta pruebas de integración |
+| Revisor (par)  | Evalúa código y da feedback sobre buenas prácticas              |
+| Product owner  | Define historias de usuario, revisa cumplimiento de entregables y criterios |
+| Scrum master   | Facilitador para el equipo de desarrollo                         |
 
 ---
 
@@ -262,6 +293,52 @@ De esta forma separamos efectivamente las responsabilidades, mejorando la legibi
 
 ---
 
+## 🧪 Uso de Mockito en `BookModelTest`
+
+### 🔧 Setup general
+- `BookRepository` es **mockeado** usando `mock(BookRepository.class)` en el `@BeforeMethod`.
+- Se aplica `when(repository.getBooks()).thenReturn(...)` para simular libros preexistentes.
+
+---
+
+### 📌 Stubbing (`when(...)`)
+Se usaron *stubs* para definir comportamientos específicos del mock:
+
+| Método Stubbed                     | Condición Simulada                              | Ciclos donde se usó                        |
+|-----------------------------------|--------------------------------------------------|--------------------------------------------|
+| `repository.storeBook(any())`     | Retorna `true` o `false` según el caso          | Crear libro exitoso / con error (1 y 2)    |
+| `repository.updateBook(any())`    | Retorna `true` al aplicar descuento             | Descuento exitoso (9)                      |
+| `repository.removeById(1)`        | Retorna `true` al eliminar por ID               | Remoción exitosa (11)                      |
+
+---
+
+### ✅ Verificaciones (`verify(...)`)
+Se aplicaron verificaciones para asegurar la interacción con el mock:
+
+| Verificación                        | Propósito                                      | Test Asociado                                |
+|------------------------------------|------------------------------------------------|----------------------------------------------|
+| `verify(repository).storeBook(...)`| Verifica que `storeBook` se haya llamado       | Crear libro (ciclos 1 y 2)                   |
+| `verify(repository).updateBook(...)`| Confirma actualización tras aplicar descuento | Descuento exitoso (9)                        |
+| `verify(repository).removeById(1)` | Verifica eliminación correcta                  | Remoción exitosa (11)                        |
+| `verify(repository, never()).removeById(anyInt())` | Confirma que no se llamó al método | Remoción fallida (12)                        |
+
+---
+
+### 🚫 ArgumentMatchers
+Se utilizaron *matchers* como `any()` y `anyInt()` para evitar coincidencias estrictas de argumentos:
+
+- `any(Book.class)`: usado en stubs y verificaciones para almacenar o actualizar libros.
+- `anyInt()`: usado en verificación `never()` para IDs inexistentes.
+
+---
+
+### 🎯 Patrón general aplicado
+- **Control estricto** del repositorio simulado sin tocar la implementación real.
+- **Aislamiento del sistema bajo prueba** (`BookModel`) asegurando que la lógica se probó con entradas controladas.
+- **Validación de interacciones y efectos secundarios**, cumpliendo principios clave de TDD y diseño limpio.
+
+---
+
 ## 📘 Ciclos TDD en `BookModelTest`
 
 ### 🧪 Ciclo 1: Crear libro exitosamente
@@ -353,17 +430,7 @@ De esta forma separamos efectivamente las responsabilidades, mejorando la legibi
 ![Screenshot de la cobertura de codigo](image.png)
 
 
-## ✅ Roles Involucrados en el Sprint
-
-| Rol           | Responsabilidad                                                  |
-|----------------|------------------------------------------------------------------|
-| Developer      | Implementa lógica, pruebas unitarias y conexión BD              |
-| QA             | Revisa criterios, realiza plan de pruebas, ejecuta pruebas de integración |
-| Revisor (par)  | Evalúa código y da feedback sobre buenas prácticas              |
-| Product owner  | Define historias de usuario, revisa cumplimiento de entregables y criterios |
-| Scrum master   | Facilitador para el equipo de desarrollo                         |
-
-🧠 Reflexión Final
+## 🧠 Reflexión Final
 Durante el desarrollo del proyecto, aprendimos a aplicar los principios del Testing Ágil y a integrar el enfoque TDD (Red-Green-Refactor) para construir funcionalidades desde los tests. Este enfoque nos ayudó a tener mayor claridad sobre los requisitos y a detectar errores desde etapas tempranas.
 
 Una de las principales dificultades fue configurar correctamente el entorno de pruebas con TestNG y simular interacciones con la base de datos sin romper la lógica de negocio. Para resolverlo, utilizamos mocks y mejoramos la estructura del código siguiendo buenas prácticas.
