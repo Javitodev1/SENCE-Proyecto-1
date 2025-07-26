@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">library</a> &gt; <a href="index.source.html" class="el_package">com.core</a> &gt; <span class="el_source">BookModel.java</span></div><h1>BookModel.java</h1><pre class="source lang-java linenums">package com.core;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class BookModel {
+    private final BookRepository repository;
+    List&lt;Book&gt; books;
+
+<span class="fc" id="L11">    public BookModel(BookRepository repository) {</span>
+<span class="fc" id="L12">        this.repository = repository;</span>
+<span class="fc" id="L13">        this.books = new ArrayList&lt;&gt;(repository.getBooks());</span>
+<span class="fc" id="L14">    }</span>
+
+    public Book createBook(String title, String autor, float price) {
+<span class="fc" id="L17">        Book newBook = new Book(title, autor, price);</span>
+<span class="fc" id="L18">        books.add(newBook);</span>
+
+<span class="fc" id="L20">        boolean success = repository.storeBook(newBook);</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (!success) {</span>
+<span class="fc" id="L22">            LoggingService.log(&quot;Book with title: &quot; + title + &quot; could not be stored into database.&quot;);</span>
+        }
+
+<span class="fc" id="L25">        return newBook;</span>
+    }
+
+    public Book findBookById(int id) {
+<span class="fc" id="L29">        Book targetBook = books.stream()</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">                .filter(book -&gt; book.getId() == id)</span>
+<span class="fc" id="L31">                .findFirst()</span>
+<span class="fc" id="L32">                .orElse(null);</span>
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (targetBook == null) {</span>
+<span class="fc" id="L35">            LoggingService.log(&quot;Not book with id &quot; + id + &quot; found.&quot;);</span>
+        }
+
+<span class="fc" id="L38">        return targetBook;</span>
+    }
+
+    public Book applyDiscount(int id, float discount) {
+<span class="fc" id="L42">        Book targetBook = findBookById(id);</span>
+
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (targetBook == null) {</span>
+<span class="fc" id="L45">            return targetBook;</span>
+        }
+
+<span class="fc" id="L48">        targetBook.setDiscount(discount);</span>
+<span class="fc" id="L49">        boolean success = repository.updateBook(targetBook);</span>
+
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (!success) {</span>
+<span class="nc" id="L52">            LoggingService.log(&quot;Book with id: &quot; + id + &quot; could not be updated into database.&quot;);</span>
+        }
+
+<span class="fc" id="L55">        return targetBook;</span>
+    }
+
+    public boolean removeById(int id) {
+<span class="fc" id="L59">        Book targetBook = findBookById(id);</span>
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (targetBook == null) {</span>
+<span class="fc" id="L62">            return false;</span>
+        }
+
+<span class="fc" id="L65">        boolean success = repository.removeById(id);</span>
+
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if (!success) {</span>
+<span class="nc" id="L68">            LoggingService.log(&quot;Book with id: &quot; + id + &quot; could not be removed from database.&quot;);</span>
+        }
+
+<span class="fc" id="L71">        return success;</span>
+    }
+
+    public List&lt;Book&gt; getBooks() {
+<span class="fc" id="L75">        return books;</span>
+    }
+
+    public Book findBookByTitle(String title) {
+<span class="fc" id="L79">        Book targetBook = books.stream()</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">                .filter(book -&gt; book.getTitle() == title)</span>
+<span class="fc" id="L81">                .findFirst()</span>
+<span class="fc" id="L82">                .orElse(null);</span>
+
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if (targetBook == null) {</span>
+<span class="nc" id="L85">            LoggingService.log(&quot;Not book with title &quot; + title + &quot; found.&quot;);</span>
+        }
+
+<span class="fc" id="L88">        return targetBook;</span>
+    }
+
+    public List&lt;Book&gt; filterByPrice(float price) {
+<span class="fc" id="L92">        return books.stream()</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">                .filter(book -&gt; book.getPrice() &lt;= price)</span>
+<span class="fc" id="L94">                .collect(Collectors.toList());</span>
+    }
+
+    public List&lt;Book&gt; filterByAuthor(String author) {
+<span class="fc" id="L98">        return books.stream()</span>
+<span class="fc" id="L99">                .filter(book -&gt; book.getAuthor().equals(author))</span>
+<span class="fc" id="L100">                .collect(Collectors.toList());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

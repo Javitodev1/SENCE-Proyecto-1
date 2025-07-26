@@ -1,0 +1,7 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+library,com.core,BookModel,9,160,3,17,3,43,3,20,0,13
+library,com.core,Book,8,64,0,0,2,24,1,12,1,12
+library,com.core,LoggingService,3,6,0,0,1,3,1,1,1,1
+library,com.core,SqlStatementBuilder,3,10,0,0,1,5,1,5,1,5
+library,com.core,BookCommandDAO,6,167,4,6,2,45,4,7,0,6
+library,com.core,SqliteBookRepository,60,70,3,3,23,24,4,8,1,8
