@@ -2,6 +2,11 @@
 
 Este repositorio contiene el desarrollo de un proyecto de librería usando Java, SQLite y pruebas automatizadas con TDD (Test Driven Development) como parte del portafolio de los módulos 2 y 3.
 
+Integrantes:
+- Leslie Aguayo
+- Jose Astudillo
+- Javier Fuentes
+
 ## Instrucciones de ejecución
 
 En el repositorio se encuentra dos archivos pom segun corresponda el OS.
