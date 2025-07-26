@@ -97,26 +97,7 @@ Este repositorio contiene el desarrollo de un proyecto de librería usando Java,
 
 ---
 
-## ✅ Roles Involucrados en el Sprint
-
-| Rol           | Responsabilidad                                                  |
-|----------------|------------------------------------------------------------------|
-| Developer      | Implementa lógica, pruebas unitarias y conexión BD              |
-| QA             | Revisa criterios, realiza plan de pruebas, ejecuta pruebas de integración |
-| Revisor (par)  | Evalúa código y da feedback sobre buenas prácticas              |
-| Product owner  | Define historias de usuario, revisa cumplimiento de entregables y criterios |
-| Scrum master   | Facilitador para el equipo de desarrollo                         |
-
-🧠 Reflexión Final
-Durante el desarrollo del proyecto, aprendimos a aplicar los principios del Testing Ágil y a integrar el enfoque TDD (Red-Green-Refactor) para construir funcionalidades desde los tests. Este enfoque nos ayudó a tener mayor claridad sobre los requisitos y a detectar errores desde etapas tempranas.
-
-Una de las principales dificultades fue configurar correctamente el entorno de pruebas con TestNG y simular interacciones con la base de datos sin romper la lógica de negocio. Para resolverlo, utilizamos mocks y mejoramos la estructura del código siguiendo buenas prácticas.
-
-Trabajar con ciclos TDD fue desafiante al principio, pero con el tiempo resultó motivador y satisfactorio ver cómo las pruebas guiaban el diseño del código. Si repitiéramos el proyecto, organizaríamos mejor los paquetes desde el inicio y automatizaríamos aún más la cobertura de pruebas para mantener la calidad del software.
-
----
-
-## Refactorizacion del código
+## ✅ Refactorizacion del código
 
 En la clase SqliteBookRepository se mezcla la logica de los operadores SQL,
 la logica para realizar la operacion, y la logica del manejo de errores y adaptacion con el modelo.
@@ -278,3 +259,113 @@ public class SqliteBookRepository implements BookRepository {
 ```
 
 De esta forma separamos efectivamente las responsabilidades, mejorando la legibilidad del código y facilitando su mantenimiento, el resto del codigo puede ser encontrado en el repositorio.
+
+---
+
+## 📘 Ciclos TDD en `BookModelTest`
+
+### 🧪 Ciclo 1: Crear libro exitosamente
+- **Red**: Se escribe `testCreateBook_ShouldStoreBook` sin implementación.
+- **Green**: Se implementa `createBook` para almacenar libros en el repositorio.
+- **Refactor**: Limpieza de dependencias, uso de `verify`.
+
+---
+
+### 🧪 Ciclo 2: Fallo al crear libro
+- **Red**: Se crea `testFailCreateBook_ShouldLogError` esperando `storeBook` falso.
+- **Green**: `createBook` maneja el error y retorna el objeto sin almacenar.
+- **Refactor**: Revisión de lógica para logging o retrocompatibilidad.
+
+---
+
+### 📚 Ciclo 3: Obtener libros existentes
+- **Red**: Se llama `getBooks` y no devuelve nada.
+- **Green**: Se implementa método que llama al repositorio.
+- **Refactor**: Validación de objetos y tamaño de lista.
+
+---
+
+### 🔍 Ciclo 4: Buscar libro por ID válido
+- **Red**: `findBookById` no retorna el libro correcto.
+- **Green**: Implementación con recorrido y comparación de ID.
+- **Refactor**: Separación lógica entre filtrado y respuesta.
+
+---
+
+### ❌ Ciclo 5: No encontrar libro por ID
+- **Red**: Se espera `null` para ID inexistente.
+- **Green**: Lógica para retorno de `null` si no se encuentra.
+- **Refactor**: Reducción de complejidad condicional.
+
+---
+
+### 🔎 Ciclo 6: Buscar por título
+- **Red**: Título buscado no da resultados.
+- **Green**: Implementación por coincidencia exacta.
+- **Refactor**: Optimización de búsqueda (case-insensitive si aplica).
+
+---
+
+### 🧑‍💻 Ciclo 7: Filtrar por autor
+- **Red**: Se espera coincidencia y no ocurre.
+- **Green**: Se filtran libros por autor con `.equals`.
+- **Refactor**: Modularización del filtro para reutilización.
+
+---
+
+### 💸 Ciclo 8: Filtrar por precio
+- **Red**: El método no devuelve los libros esperados.
+- **Green**: Implementación lógica de comparación por precio.
+- **Refactor**: Separación de filtros como helper privado.
+
+---
+
+### 🏷️ Ciclo 9: Aplicar descuento exitosamente
+- **Red**: `applyDiscount` no modifica el libro.
+- **Green**: Se actualiza el objeto y se llama a `updateBook`.
+- **Refactor**: Validación de campos antes de aplicar descuento.
+
+---
+
+### 🚫 Ciclo 10: Fallo al aplicar descuento
+- **Red**: Descuento sobre ID inexistente debería dar `null`.
+- **Green**: Verificación del ID antes de ejecutar lógica.
+- **Refactor**: Simplificación del control de flujo.
+
+---
+
+### 🗑️ Ciclo 11: Remover libro exitosamente
+- **Red**: `removeById` falla al eliminar libro válido.
+- **Green**: Verifica existencia y llama a `removeById`.
+- **Refactor**: Consolidación de estado y confirmación de acción.
+
+---
+
+### 🚷 Ciclo 12: No remover libro inexistente
+- **Red**: El método elimina sin verificar existencia.
+- **Green**: Implementación devuelve `false` si no se encuentra ID.
+- **Refactor**: Prevención de operaciones inútiles.
+
+---
+
+## ✅ Cobertura de código por jacoco
+
+![Screenshot de la cobertura de codigo](image.png)
+
+
+## ✅ Roles Involucrados en el Sprint
+
+| Rol           | Responsabilidad                                                  |
+|----------------|------------------------------------------------------------------|
+| Developer      | Implementa lógica, pruebas unitarias y conexión BD              |
+| QA             | Revisa criterios, realiza plan de pruebas, ejecuta pruebas de integración |
+| Revisor (par)  | Evalúa código y da feedback sobre buenas prácticas              |
+| Product owner  | Define historias de usuario, revisa cumplimiento de entregables y criterios |
+| Scrum master   | Facilitador para el equipo de desarrollo                         |
+
+🧠 Reflexión Final
+Durante el desarrollo del proyecto, aprendimos a aplicar los principios del Testing Ágil y a integrar el enfoque TDD (Red-Green-Refactor) para construir funcionalidades desde los tests. Este enfoque nos ayudó a tener mayor claridad sobre los requisitos y a detectar errores desde etapas tempranas.
+
+Una de las principales dificultades fue configurar correctamente el entorno de pruebas con TestNG y simular interacciones con la base de datos sin romper la lógica de negocio. Para resolverlo, utilizamos mocks y mejoramos la estructura del código siguiendo buenas prácticas.
+
+Trabajar con ciclos TDD fue desafiante al principio, pero con el tiempo resultó motivador y satisfactorio ver cómo las pruebas guiaban el diseño del código. Si repitiéramos el proyecto, organizaríamos mejor los paquetes desde el inicio y automatizaríamos aún más la cobertura de pruebas para mantener la calidad del software.
