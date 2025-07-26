@@ -1,6 +1,6 @@
 # 📚 Proyecto de Librería - Portafolio TDD y Testing Ágil
 
-[Repositorio Github](https://github.com/Javitodev1/SENCE-Proyecto-1.git)
+[Repositorio Github](https://github.com/Javitodev1/SENCE-Proyecto-1)
 
 Este repositorio contiene el desarrollo de un proyecto de librería usando Java, SQLite y pruebas automatizadas con TDD (Test Driven Development) como parte del portafolio de los módulos 2 y 3.
 
